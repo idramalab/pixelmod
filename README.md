@@ -3,7 +3,7 @@ Source code and labeled dataset for our Usenix Security'24 paper PixelMoD
 
 # Instructions to Download and Run PixelMod 
 ## Step 1 
-Download the evaluation docker image , and volumes associated with Docker image from the  [Zenodo URL.](zenodo.org)
+Download the evaluation docker image , and volumes associated with Docker image from the  [Zenodo URL.](https://zenodo.org/records/12570381)
 
 (Note: due to refactoring for evaluation workflow, the stable Zenodo URL is updated from the one initially submitted during the AE process. )
 
