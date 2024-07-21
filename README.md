@@ -48,14 +48,32 @@ This should start four different containers: `milvus-standalone`, `milvus-etcd`,
 ### 3.1 Basic Test
 Make sure the container and Milvus index is working properly by running the command `sudo docker exec -it  $(sudo docker container ls  | grep 'milvus-pixelmod' | awk '{print $1}') python3 basic_test.py`
 
-#### 3.2 Interacting with companion streamlit web application 
+### 3.2 Interacting with companion streamlit web application 
 Starting the container automatically runs the streamlit web application in port 8501 of the container. Port 8501 of the container is mapped to port 8501 of host machine (evaluators can modify this on `client` service of the compose file to change the mapping). 
 Therefore, browsing to  `localhost:8501`  on the host machine should start the streamlit application succesfully.
 
-#### 3.3 Running experiment2_evaluating.py for benchmarking PixelMod.
-Users can run the command `sudo docker exec -it  $(sudo docker container ls  | grep 'milvus-pixelmod' | awk '{print $1}') /bin/bash` to start a bash terminal in the running container where `milvus-pixelmod:latest` is the container imported in Section 2.1. 
-Evaluation can then be performed by running the script `python experiment2_evaluating.py`
- ---
+### 3.3 Running experiment2_evaluating.py for benchmarking PixelMod.
+Users can run the command `sudo docker exec -it  $(sudo docker container ls  | grep 'milvus-pixelmod' | awk '{print $1}') /bin/bash` to start a bash terminal in the running container where `milvus-pixelmod:latest` is the container imported in Section 2.1.
+
+Evaluation can then be performed by running the script python `experiment2_evaluating.py`  
+
+#### 3.3.1 Evaluation Workflow for benchmarking script `experiment2_evaluating.py` 
+The script evaluates PixelMod's image search system (combination of PDQHash + OCR filtering as described in the paper).
+ 
+The files used in the script serve the following purpose:
+ - `query_pdqhash.txt` contains the set of seed images used to build the GTViz dataset. This list contains the  images that we have annotated ground truth information to detect visual matches.
+ - `index_pdqhash.txt` contains the set of images that are visually and contextually similar to images in `query_pdqhash.txt`. These images are used to build the corresponding Milvus collection `usenixtest_pdqhash_v2`, which we will be querying to retrieve visually similar matches. 
+ - `final_source_ocr_en.json` and `final_manipulation_ocr_en_v2.json` contain the pre-computed Optical Character Recognition (OCR) output of the images used in `index_pdqhash.txt`, and `query_pdqhash.txt`. These will be used to filter for contextual similarity once the visually similar matches are returned by Milvus.
+ 
+ The evaluation workflow follows given steps:
+ -  First, set up  configuration and connection parameters to connect
+       with the Milvus container and loads the appropriate collection
+       `usenixtest_pdqhash_v2` used to build `GTViz`.
+ - Load query images from `query_pdqhash.txt` and generate PDQHash embeddings for query
+ - Load metadata for images that are used to build the `usenixtest_pdqhash_v2` collection. Build dictionary containing ground truth for all images. 
+	 - Ground truth labels follow a simple scheme. Visual matches of img0 will have format  `img0_*`,  `img1_*` 
+    - Indexed images that are not visual matches for any source image will have the format `noise_*`
+  - Finally, iterate through all query images, using the query vectors and get the results. Results are filtered through OCR based filtering mechanism using Jaccard similarity matching and final set of results are checked for Precision / Recall. 
 
 ### Citing The Paper
 ```
