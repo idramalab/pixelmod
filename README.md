@@ -55,3 +55,13 @@ Therefore, browsing to  `localhost:8501`  on the host machine should start the s
 #### 3.3 Running experiment2_evaluating.py for benchmarking PixelMod.
 Users can run the command `sudo docker exec -it  $(sudo docker container ls  | grep 'milvus-pixelmod' | awk '{print $1}') /bin/bash` to start a bash terminal in the running container where `milvus-pixelmod:latest` is the container imported in Section 2.1. 
 Evaluation can then be performed by running the script `python experiment2_evaluating.py`
+ ---
+
+### Citing The Paper
+```
+@inproceedings {sec24:pixelmod,
+    title = {PIXELMOD: Improving Soft Moderation of Visual Misleading Information on Twitter},
+    booktitle = {33rd USENIX Security Symposium (USENIX Security)},
+    year = {2024},
+    author={Pujan Paudel, Chen Ling, Jeremy Blackburn, and Gianluca Stringhini}
+}
